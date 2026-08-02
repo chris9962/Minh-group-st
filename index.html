@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MGST — Giới thiệu nền tảng</title>
+<style>
+  :root {
+    --om-bg: #f8f5f0;
+    --om-card: #ffffff;
+    --om-surface: #f4f0ea;
+    --om-panel: #fbf9f6;
+    --om-line: #ebe5dc;
+    --om-line-strong: #c0b6a5;
+    --om-text: #201e1d;
+    --om-text-2: #645c50;
+    --om-text-3: #82796a;
+    --om-text-on-accent: #ffffff;
+    --om-orange: #d95328;
+    --om-orange-mid: #bf4420;
+    --om-orange-ink: #963317;
+    --om-orange-soft: #fce6dd;
+    --om-orange-light: #f6bfa9;
+    --om-green: #10b981;
+    --om-green-soft: #e6f7f1;
+    --om-green-ink: #0f7a5b;
+    --shadow-sm: 0 1px 2px rgb(32 30 29 / 6%), 0 1px 1px rgb(32 30 29 / 4%);
+    --shadow-md: 0 4px 12px rgb(32 30 29 / 8%);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--om-bg);
+    color: var(--om-text);
+    font-family: Figtree, system-ui, -apple-system, "Segoe UI", sans-serif;
+    line-height: 1.55;
+  }
+
+  h1, h2, h3 {
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-weight: 600;
+    margin: 0;
+  }
+
+  a { color: var(--om-orange-ink); }
+
+  .skip-link {
+    position: absolute;
+    left: -999px;
+    top: 0;
+    background: var(--om-orange);
+    color: var(--om-text-on-accent);
+    padding: 10px 16px;
+    border-radius: 0 0 8px 0;
+    z-index: 100;
+  }
+  .skip-link:focus { left: 0; }
+
+  /* ── Nav ─────────────────────────────────────────────── */
+  .topnav {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: rgb(248 245 240 / 92%);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--om-line);
+  }
+  .topnav-inner {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .brand img { width: 28px; height: 28px; border-radius: 6px; }
+  .topnav-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    overflow-x: auto;
+  }
+  .topnav-links a {
+    display: inline-block;
+    padding: 8px 12px;
+    border-radius: 999px;
+    color: var(--om-text-2);
+    text-decoration: none;
+    font-size: 14px;
+    white-space: nowrap;
+  }
+  .topnav-links a:hover,
+  .topnav-links a:focus-visible {
+    background: var(--om-orange-soft);
+    color: var(--om-orange-ink);
+  }
+
+  /* ── Hero ────────────────────────────────────────────── */
+  .hero {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 56px 24px 40px;
+  }
+  .hero-tag {
+    display: inline-block;
+    background: var(--om-orange-soft);
+    color: var(--om-orange-ink);
+    font-size: 13px;
+    font-weight: 600;
+    padding: 5px 12px;
+    border-radius: 999px;
+    margin-bottom: 16px;
+  }
+  .hero h1 {
+    font-size: clamp(28px, 4vw, 40px);
+    line-height: 1.2;
+    max-width: 18ch;
+  }
+  .hero p {
+    max-width: 62ch;
+    color: var(--om-text-2);
+    font-size: 17px;
+    margin-top: 16px;
+  }
+
+  /* ── Section shell ───────────────────────────────────── */
+  section {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 40px 24px;
+    scroll-margin-top: 64px;
+  }
+  section + section { border-top: 1px solid var(--om-line); }
+
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+  }
+  .section-head h2 {
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-icon { font-size: 22px; }
+  .section-lede {
+    color: var(--om-text-2);
+    max-width: 68ch;
+    margin: 8px 0 0;
+  }
+
+  .status-badge {
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+  .status-badge.pending {
+    background: var(--om-surface);
+    color: var(--om-text-3);
+    border: 1px solid var(--om-line-strong);
+  }
+  .status-badge.ready {
+    background: var(--om-green-soft);
+    color: var(--om-green-ink);
+  }
+
+  /* ── Feature overview grid (section 1) ──────────────── */
+  .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+    margin-top: 28px;
+  }
+  .feature-card {
+    background: var(--om-card);
+    border: 1px solid var(--om-line);
+    border-radius: 12px;
+    padding: 18px;
+    box-shadow: var(--shadow-sm);
+  }
+  .feature-card .icon {
+    font-size: 24px;
+    display: block;
+    margin-bottom: 10px;
+  }
+  .feature-card h3 {
+    font-size: 16px;
+    margin-bottom: 6px;
+  }
+  .feature-card p {
+    font-size: 14px;
+    color: var(--om-text-2);
+    margin: 0;
+  }
+  .feature-card a {
+    display: inline-block;
+    margin-top: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .feature-card a:hover { text-decoration: underline; }
+
+  .shared-note {
+    margin-top: 32px;
+    background: var(--om-panel);
+    border: 1px solid var(--om-line);
+    border-radius: 12px;
+    padding: 18px 20px;
+    font-size: 14px;
+    color: var(--om-text-2);
+  }
+  .shared-note strong { color: var(--om-text); }
+
+  /* ── Placeholder media slots (section 2-9) ─────────────── */
+  .media-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin-top: 8px;
+  }
+  .media-slot {
+    aspect-ratio: 16 / 10;
+    border: 1.5px dashed var(--om-line-strong);
+    border-radius: 12px;
+    background: var(--om-panel);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--om-text-3);
+    font-size: 13px;
+    text-align: center;
+    padding: 16px;
+  }
+  .video-slot {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    border-radius: 12px;
+    border: 1px solid var(--om-line);
+    box-shadow: var(--shadow-md);
+    background: #000;
+  }
+
+  .estimate-note {
+    background: var(--om-panel);
+    border: 1px solid var(--om-line);
+    border-radius: 12px;
+    padding: 16px 20px;
+    font-size: 14px;
+    color: var(--om-text-2);
+    margin-bottom: 24px;
+  }
+  .estimate-note strong { color: var(--om-text); }
+
+  .table-scroll {
+    overflow-x: auto;
+    border: 1px solid var(--om-line);
+    border-radius: 12px;
+    background: var(--om-card);
+    box-shadow: var(--shadow-sm);
+  }
+  .estimate-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    white-space: nowrap;
+  }
+  .estimate-table th,
+  .estimate-table td {
+    text-align: left;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--om-line);
+  }
+  .estimate-table th {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    color: var(--om-text-3);
+    background: var(--om-panel);
+  }
+  .estimate-table td.num { text-align: right; font-variant-numeric: tabular-nums; }
+  .estimate-table tr.total-row td {
+    font-weight: 600;
+    border-top: 1.5px solid var(--om-line-strong);
+    border-bottom: none;
+  }
+  .estimate-footnotes {
+    margin-top: 20px;
+    font-size: 13.5px;
+    color: var(--om-text-2);
+    line-height: 1.6;
+  }
+  .estimate-footnotes ul { margin: 6px 0 0; padding-left: 20px; }
+  .estimate-footnotes li { margin-bottom: 3px; }
+
+  footer {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 32px 24px 64px;
+    color: var(--om-text-3);
+    font-size: 13px;
+  }
+
+  @media (max-width: 640px) {
+    .topnav-inner { flex-direction: column; align-items: flex-start; gap: 8px; }
+    .topnav-links { width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<a class="skip-link" href="#gioi-thieu">Bỏ qua, đến nội dung chính</a>
+
+<nav class="topnav" aria-label="Điều hướng nhanh giữa các phần">
+  <div class="topnav-inner">
+    <div class="brand">
+      <img src="assets/brand/logo.png" alt="" width="28" height="28">
+      <span>MGST</span>
+    </div>
+    <ul class="topnav-links">
+      <li><a href="#gioi-thieu">Giới thiệu</a></li>
+      <li><a href="#phong-ban">Phòng ban</a></li>
+      <li><a href="#nhan-su">Nhân sự &amp; phân quyền</a></li>
+      <li><a href="#ngan-hang">Ngân hàng</a></li>
+      <li><a href="#bao-hiem">Bảo hiểm</a></li>
+      <li><a href="#dich-vu">Dịch vụ</a></li>
+      <li><a href="#khach-hang">Khách hàng</a></li>
+      <li><a href="#tong-quan">Tổng quan</a></li>
+      <li><a href="#cau-hinh">Cấu hình</a></li>
+      <li><a href="#uoc-tinh">Ước tính chi phí</a></li>
+      <li><a href="#ha-tang">Hạ tầng vận hành</a></li>
+    </ul>
+  </div>
+</nav>
+
+<main>
+
+  <header class="hero">
+    <span class="hero-tag">Nền tảng nội bộ Minh Group</span>
+    <h1>MGST — quản lý bảo hiểm, ngân hàng, dịch vụ và khách hàng trên một hệ thống</h1>
+  </header>
+
+  <section id="gioi-thieu" aria-labelledby="gioi-thieu-h">
+    <div class="section-head">
+      <h2 id="gioi-thieu-h"><span class="section-icon">👋</span> Giới thiệu chung</h2>
+    </div>
+    <p class="section-lede">
+      MGST thay việc theo dõi rời rạc trên Excel bằng một hệ thống dùng chung cho
+      toàn bộ đội kinh doanh, kế toán và ban giám đốc. Ba nghiệp vụ chính —
+      <strong>bảo hiểm</strong>, <strong>ngân hàng</strong>, <strong>dịch vụ</strong> —
+      đều gắn về một hồ sơ khách hàng duy nhất, và mọi thao tác đều đi qua một hệ
+      thống phân quyền theo chức vụ: mỗi người chỉ thấy và làm được đúng phần việc
+      của mình.
+    </p>
+
+    <div class="feature-grid">
+      <div class="feature-card">
+        <span class="icon">🏢</span>
+        <h3>Phòng ban</h3>
+        <p>Quản lý danh sách phòng ban trong công ty: lập phòng mới, đổi tên, cho
+           ngừng hoạt động. Không cho ngừng một phòng còn người, tránh thất lạc
+           nhân sự.</p>
+        <a href="#phong-ban">Xem chi tiết ↓</a>
+      </div>
+      <div class="feature-card">
+        <span class="icon">🎯</span>
+        <h3>Nhân sự &amp; phân quyền</h3>
+        <p>Danh sách nhân viên kèm điểm KPI, hồ sơ và tài khoản đăng nhập. Mỗi chức
+           vụ có sẵn một bộ quyền mặc định quyết định thấy trang nào, làm được gì —
+           chỉnh tay được cho từng người khi cần.</p>
+        <a href="#nhan-su">Xem chi tiết ↓</a>
+      </div>
+      <div class="feature-card">
+        <span class="icon">🏦</span>
+        <h3>Ngân hàng</h3>
+        <p>Mở và quản lý tài khoản ngân hàng cho khách hàng — gắn vào khách hàng có
+           sẵn hoặc tạo khách hàng mới ngay trong lúc mở tài khoản.</p>
+        <a href="#ngan-hang">Xem chi tiết ↓</a>
+      </div>
+      <div class="feature-card">
+        <span class="icon">📄</span>
+        <h3>Bảo hiểm</h3>
+        <p>Tạo đơn bảo hiểm, theo dõi trạng thái từ lúc gửi đến khi hoàn thành, và
+           xử lý các đơn bị lỗi.</p>
+        <a href="#bao-hiem">Xem chi tiết ↓</a>
+      </div>
+      <div class="feature-card">
+        <span class="icon">🧾</span>
+        <h3>Dịch vụ</h3>
+        <p>Ghi nhận các dịch vụ đã thực hiện cho khách hàng và theo dõi danh sách
+           dịch vụ theo thời gian.</p>
+        <a href="#dich-vu">Xem chi tiết ↓</a>
+      </div>
+      <div class="feature-card">
+        <span class="icon">👤</span>
+        <h3>Khách hàng</h3>
+        <p>Hồ sơ khách hàng 360° — xem toàn bộ lịch sử giao dịch ở một chỗ. Khách
+           đủ điều kiện sẽ có nút tặng quà xuất hiện ngay trên hồ sơ.</p>
+        <a href="#khach-hang">Xem chi tiết ↓</a>
+      </div>
+      <div class="feature-card">
+        <span class="icon">📊</span>
+        <h3>Tổng quan</h3>
+        <p>Bảng điều khiển tổng hợp số liệu toàn công ty, hoặc theo phòng tuỳ phạm vi
+           đang xem.</p>
+        <a href="#tong-quan">Xem chi tiết ↓</a>
+      </div>
+      <div class="feature-card">
+        <span class="icon">⚙️</span>
+        <h3>Cấu hình</h3>
+        <p>Các bảng cấu hình nghiệp vụ: quy tắc quà, danh mục quà &amp; gói bảo
+           hiểm, chỉ tiêu KPI theo tháng, danh mục loại dịch vụ và các danh mục
+           dùng chung khác.</p>
+        <a href="#cau-hinh">Xem chi tiết ↓</a>
+      </div>
+    </div>
+
+    <p class="shared-note">
+      <strong>Vài thứ dùng chung ở mọi màn danh sách:</strong> tìm kiếm khách hàng
+      không cần gõ dấu, bộ chọn phạm vi xem (của tôi / phòng tôi quản / toàn công
+      ty) hiện theo đúng quyền được cấp, và xuất Excel cho từng danh sách.
+    </p>
+  </section>
+
+  <section id="phong-ban" aria-labelledby="phong-ban-h">
+    <div class="section-head">
+      <h2 id="phong-ban-h"><span class="section-icon">🏢</span> Phòng ban</h2>
+      <span class="status-badge ready">Đã có video</span>
+    </div>
+    <p class="section-lede">Quản lý danh sách phòng ban: lập phòng mới, đổi tên, ngừng/mở hoạt động. Với
+       tài khoản có quyền xem số liệu tổng hợp, bảng còn hiện thêm số liệu kinh doanh theo phòng.</p>
+    <video class="video-slot" controls preload="metadata" width="640">
+      <source src="assets/video/phong-ban.mp4" type="video/mp4">
+      Trình duyệt của bạn không hỗ trợ phát video.
+    </video>
+  </section>
+
+  <section id="nhan-su" aria-labelledby="nhan-su-h">
+    <div class="section-head">
+      <h2 id="nhan-su-h"><span class="section-icon">🎯</span> Nhân sự &amp; phân quyền</h2>
+      <span class="status-badge ready">Đã có video</span>
+    </div>
+    <p class="section-lede">Danh sách nhân viên, điểm KPI, và hệ thống phân quyền theo chức vụ — mỗi
+       chức vụ có bộ quyền mặc định, chỉnh tay được cho từng người khi cần.</p>
+    <video class="video-slot" controls preload="metadata" width="640">
+      <source src="assets/video/nhan-su.mp4" type="video/mp4">
+      Trình duyệt của bạn không hỗ trợ phát video.
+    </video>
+  </section>
+
+  <section id="ngan-hang" aria-labelledby="ngan-hang-h">
+    <div class="section-head">
+      <h2 id="ngan-hang-h"><span class="section-icon">🏦</span> Ngân hàng</h2>
+      <span class="status-badge ready">Đã có video</span>
+    </div>
+    <p class="section-lede">Mở và quản lý tài khoản ngân hàng cho khách hàng — chọn khách có sẵn hoặc
+       tạo khách hàng mới ngay trong lúc mở tài khoản, giữ chỗ mã trước rồi hoàn tất sau.</p>
+    <video class="video-slot" controls preload="metadata" width="640">
+      <source src="assets/video/ngan-hang.mp4" type="video/mp4">
+      Trình duyệt của bạn không hỗ trợ phát video.
+    </video>
+  </section>
+
+  <section id="bao-hiem" aria-labelledby="bao-hiem-h">
+    <div class="section-head">
+      <h2 id="bao-hiem-h"><span class="section-icon">📄</span> Bảo hiểm</h2>
+      <span class="status-badge ready">Đã có video</span>
+    </div>
+    <p class="section-lede">Tạo và theo dõi đơn bảo hiểm — chọn khách có sẵn hoặc tạo khách hàng mới
+       ngay trong lúc tạo đơn, đơn lỗi rơi vào hàng chờ làm tay cho đội xử lý.</p>
+    <video class="video-slot" controls preload="metadata" width="640">
+      <source src="assets/video/bao-hiem.mp4" type="video/mp4">
+      Trình duyệt của bạn không hỗ trợ phát video.
+    </video>
+  </section>
+
+  <section id="dich-vu" aria-labelledby="dich-vu-h">
+    <div class="section-head">
+      <h2 id="dich-vu-h"><span class="section-icon">🧾</span> Dịch vụ</h2>
+      <span class="status-badge ready">Đã có video</span>
+    </div>
+    <p class="section-lede">Ghi nhận và theo dõi các dịch vụ đã thực hiện cho khách hàng — chọn khách
+       có sẵn hoặc tạo mới ngay tại chỗ, không có khoản phí nào cần nhập.</p>
+    <video class="video-slot" controls preload="metadata" width="640">
+      <source src="assets/video/dich-vu.mp4" type="video/mp4">
+      Trình duyệt của bạn không hỗ trợ phát video.
+    </video>
+  </section>
+
+  <section id="khach-hang" aria-labelledby="khach-hang-h">
+    <div class="section-head">
+      <h2 id="khach-hang-h"><span class="section-icon">👤</span> Khách hàng</h2>
+      <span class="status-badge ready">Đã có video</span>
+    </div>
+    <p class="section-lede">Hồ sơ khách hàng 360° và tính năng tặng quà khi đủ điều kiện — chọn quà là
+       bảo hiểm thì hệ thống tự mở form và tạo đơn luôn, mỗi khách chỉ tặng đúng một lần.</p>
+    <video class="video-slot" controls preload="metadata" width="640">
+      <source src="assets/video/khach-hang.mp4" type="video/mp4">
+      Trình duyệt của bạn không hỗ trợ phát video.
+    </video>
+  </section>
+
+  <section id="tong-quan" aria-labelledby="tong-quan-h">
+    <div class="section-head">
+      <h2 id="tong-quan-h"><span class="section-icon">📊</span> Tổng quan</h2>
+      <span class="status-badge ready">Đã có video</span>
+    </div>
+    <p class="section-lede">Bảng điều khiển tổng hợp số liệu ngân hàng, bảo hiểm, dịch vụ và xếp hạng
+       phòng — phạm vi và kỳ xem tuỳ chọn được.</p>
+    <video class="video-slot" controls preload="metadata" width="640">
+      <source src="assets/video/tong-quan.mp4" type="video/mp4">
+      Trình duyệt của bạn không hỗ trợ phát video.
+    </video>
+  </section>
+
+  <section id="cau-hinh" aria-labelledby="cau-hinh-h">
+    <div class="section-head">
+      <h2 id="cau-hinh-h"><span class="section-icon">⚙️</span> Cấu hình</h2>
+      <span class="status-badge ready">Đã có video</span>
+    </div>
+    <p class="section-lede">Các bảng cấu hình nghiệp vụ — đi qua lần lượt từng trang.</p>
+    <video class="video-slot" controls preload="metadata" width="640">
+      <source src="assets/video/cau-hinh.mp4" type="video/mp4">
+      Trình duyệt của bạn không hỗ trợ phát video.
+    </video>
+  </section>
+
+  <section id="uoc-tinh" aria-labelledby="uoc-tinh-h">
+    <div class="section-head">
+      <h2 id="uoc-tinh-h"><span class="section-icon">🧮</span> Ước tính thời gian &amp; chi phí</h2>
+    </div>
+    <p class="section-lede">Phân bổ giờ làm theo từng feature, quy đổi ra chi phí.</p>
+
+    <div class="table-scroll">
+      <table class="estimate-table">
+        <thead>
+          <tr>
+            <th>Feature</th>
+            <th class="num">FE (h)</th>
+            <th class="num">BE (h)</th>
+            <th class="num">Testing (h)</th>
+            <th class="num">Tổng giờ</th>
+            <th class="num">Chi phí (VNĐ)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Thiết kế cơ sở dữ liệu</td>
+            <td class="num">0</td><td class="num">16</td><td class="num">4</td>
+            <td class="num">20</td><td class="num">4.167.000</td>
+          </tr>
+          <tr>
+            <td>Nền tảng dùng chung</td>
+            <td class="num">12</td><td class="num">16</td><td class="num">5</td>
+            <td class="num">33</td><td class="num">6.875.000</td>
+          </tr>
+          <tr>
+            <td>Phòng ban</td>
+            <td class="num">4</td><td class="num">3</td><td class="num">2</td>
+            <td class="num">9</td><td class="num">1.875.000</td>
+          </tr>
+          <tr>
+            <td>Nhân sự &amp; phân quyền</td>
+            <td class="num">10</td><td class="num">13</td><td class="num">5</td>
+            <td class="num">28</td><td class="num">5.833.000</td>
+          </tr>
+          <tr>
+            <td>Ngân hàng</td>
+            <td class="num">11</td><td class="num">14</td><td class="num">5</td>
+            <td class="num">30</td><td class="num">6.250.000</td>
+          </tr>
+          <tr>
+            <td>Bảo hiểm</td>
+            <td class="num">10</td><td class="num">29</td><td class="num">5</td>
+            <td class="num">44</td><td class="num">9.167.000</td>
+          </tr>
+          <tr>
+            <td>Dịch vụ</td>
+            <td class="num">4</td><td class="num">3</td><td class="num">2</td>
+            <td class="num">9</td><td class="num">1.875.000</td>
+          </tr>
+          <tr>
+            <td>Khách hàng &amp; tặng quà</td>
+            <td class="num">11</td><td class="num">11</td><td class="num">5</td>
+            <td class="num">27</td><td class="num">5.625.000</td>
+          </tr>
+          <tr>
+            <td>Tổng quan</td>
+            <td class="num">6</td><td class="num">4</td><td class="num">2</td>
+            <td class="num">12</td><td class="num">2.500.000</td>
+          </tr>
+          <tr>
+            <td>Cấu hình</td>
+            <td class="num">10</td><td class="num">13</td><td class="num">5</td>
+            <td class="num">28</td><td class="num">5.833.000</td>
+          </tr>
+          <tr class="total-row">
+            <td>Tổng</td>
+            <td class="num">78</td><td class="num">122</td><td class="num">40</td>
+            <td class="num">240</td><td class="num">50.000.000</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="estimate-footnotes">
+      <p><strong>Nền tảng dùng chung</strong> gồm 9 hạng mục nền, làm một lần và dùng lại ở mọi trang:</p>
+      <ul>
+        <li>Đăng nhập · Đổi mật khẩu · Khung app (sidebar theo quyền) · Hồ sơ cá nhân</li>
+        <li>Bộ chọn phạm vi · Ô tìm khách hàng thông minh (không dấu, theo SĐT/CCCD)</li>
+        <li>Bộ upload ảnh · Bộ xuất Excel · Thông báo trong app</li>
+      </ul>
+      <p style="margin-top: 12px;">
+        <strong>Thiết kế cơ sở dữ liệu</strong> — thiết kế lược đồ bảng, quan hệ, chỉ mục cho toàn bộ
+        hệ thống trước khi dựng từng feature, làm một lần ở đầu dự án.
+      </p>
+      <p style="margin-top: 12px;">
+        <strong>Bảo hiểm</strong> gồm 20 giờ dựng bot tự động tạo đơn PVI ở mức proof-of-concept
+        (giao diện PVI không đổi, không xử lý lỗi phát sinh). Mức đầy đủ theo ước tính gốc là
+        3–5 tuần-người (120–200 giờ) kèm chi phí bảo trì khi PVI đổi giao diện — nên tách hợp đồng
+        riêng nếu cần bot chạy ổn định lâu dài.
+      </p>
+    </div>
+  </section>
+
+  <section id="ha-tang" aria-labelledby="ha-tang-h">
+    <div class="section-head">
+      <h2 id="ha-tang-h"><span class="section-icon">🖥️</span> Hạ tầng vận hành</h2>
+    </div>
+    <p class="section-lede">Cấu hình server tối thiểu: <strong>8 vCPU · 16GB RAM · 150GB SSD</strong>.
+       Bốn lựa chọn nhà cung cấp bên dưới — chọn theo ngân sách và yêu cầu đặt máy chủ trong/ngoài
+       nước.</p>
+
+    <div class="table-scroll">
+      <table class="estimate-table">
+        <thead>
+          <tr>
+            <th>Nhà cung cấp</th>
+            <th>Gói</th>
+            <th>Cấu hình</th>
+            <th class="num">Giá/tháng</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>VNPT Cloud <span style="color: var(--om-text-3);">(VN)</span></td>
+            <td>SMC 08</td>
+            <td>8 vCPU · 16GB · 100GB SSD</td>
+            <td class="num">1.660.000đ</td>
+          </tr>
+          <tr>
+            <td>Viettel IDC <span style="color: var(--om-text-3);">(VN)</span></td>
+            <td>HR-16x</td>
+            <td>8 vCPU · 16GB · 150GB SSD</td>
+            <td class="num">3.300.000đ</td>
+          </tr>
+          <tr>
+            <td>FPT Cloud <span style="color: var(--om-text-3);">(VN)</span></td>
+            <td>HIGH-01</td>
+            <td>8 vCPU · 16GB · 300GB SSD</td>
+            <td class="num">Liên hệ báo giá</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="estimate-note" style="margin-top: 12px;">
+      VNPT rẻ nhất nhưng SSD thấp hơn mức tối thiểu (100GB, cần mua thêm). FPT khớp đúng cấu hình
+      nhất (300GB) nhưng không niêm yết giá công khai, cần gọi hỏi trực tiếp.
+    </p>
+
+    <div class="table-scroll" style="margin-top: 28px;">
+      <table class="estimate-table">
+        <thead>
+          <tr>
+            <th>Phần</th>
+            <th>Dùng để làm gì</th>
+            <th class="num">Dung lượng</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1. Cài hệ thống</td>
+            <td>Hệ điều hành, Docker, image, Node.js, mã nguồn app</td>
+            <td class="num">~20GB</td>
+          </tr>
+          <tr>
+            <td>2. Còn lại cho Database</td>
+            <td>Toàn bộ dữ liệu app tạo ra hàng ngày</td>
+            <td class="num">~130GB</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 style="font-size: 17px; margin: 28px 0 12px;">Phần 2 dùng hết bao lâu?</h3>
+    <p class="estimate-note" style="margin-bottom: 12px;">
+      Giả sử mỗi ngày: 1.200 khách hàng mới · 3.000 tài khoản ngân hàng (2,5 TK/khách) ·
+      1.250 đơn bảo hiểm · 100 dòng dịch vụ · 20.000 dòng nhật ký truy vết. Mỗi dòng ước ~1KB
+      (đã tính cả chỉ mục).
+    </p>
+    <div class="table-scroll">
+      <table class="estimate-table">
+        <thead>
+          <tr>
+            <th>Mốc thời gian</th>
+            <th class="num">Số dòng</th>
+            <th class="num">Dung lượng dùng</th>
+            <th class="num">Còn lại / 130GB</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1 ngày</td>
+            <td class="num">~25.550 dòng</td>
+            <td class="num">~25MB</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td>1 tháng</td>
+            <td class="num">~766.500 dòng</td>
+            <td class="num">~0,75GB</td>
+            <td class="num">còn ~129GB</td>
+          </tr>
+          <tr>
+            <td>1 năm *(nhật ký bắt đầu bị xoá bớt sau mốc này — xem ghi chú)*</td>
+            <td class="num">~9.300.000 dòng</td>
+            <td class="num">~9GB</td>
+            <td class="num">còn ~121GB</td>
+          </tr>
+          <tr>
+            <td>5 năm</td>
+            <td class="num">—</td>
+            <td class="num">~17GB</td>
+            <td class="num">còn ~113GB</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="estimate-note" style="margin-top: 12px;">
+      Nhật ký truy vết xoá sau 1 năm nên không tăng mãi — sau năm đầu, phần này giữ cố định quanh
+      mức ~7GB, chỉ còn khách hàng/tài khoản/đơn hàng (không xoá) tăng chậm dần theo mỗi năm.
+      <strong>Với tốc độ này, 130GB dùng thoải mái hơn 10 năm</strong> không cần nâng cấp ổ đĩa.
+      Ảnh chứng minh <strong>không nằm trong 150GB này</strong> — lưu riêng ở Object Storage, xoá
+      sau 3 tháng, mức cần dùng ổn định ~260–300GB.
+    </p>
+
+    <h3 style="font-size: 17px; margin: 28px 0 12px;">Object Storage lưu ảnh — chọn nhà cung cấp</h3>
+    <div class="table-scroll">
+      <table class="estimate-table">
+        <thead>
+          <tr>
+            <th>Nhà cung cấp</th>
+            <th>Đơn giá</th>
+            <th class="num">~280GB cần dùng</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Viettel vObject <span style="color: var(--om-text-3);">(VN)</span></td>
+            <td>1.300đ/GB/tháng (gói 500GB gần nhất)</td>
+            <td class="num">650.000đ</td>
+          </tr>
+          <tr>
+            <td>FPT Object Storage <span style="color: var(--om-text-3);">(VN)</span></td>
+            <td>~1.750đ/GB/tháng</td>
+            <td class="num">~490.000đ</td>
+          </tr>
+          <tr>
+            <td>AWS S3 Standard <span style="color: var(--om-text-3);">(Singapore)</span></td>
+            <td>~$0,025/GB/tháng (~640đ/GB)</td>
+            <td class="num">~179.000đ</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="estimate-note" style="margin-top: 12px;">
+      Ngược với compute, <strong>S3 rẻ nhất</strong> trong 3 lựa chọn cho phần lưu ảnh — có thể
+      cân nhắc đặt server ở nhà cung cấp trong nước (latency thấp cho nhân viên) nhưng lưu ảnh
+      trên S3 (rẻ hơn), miễn chấp nhận độ trễ khi tải ảnh từ nước ngoài về.
+    </p>
+  </section>
+
+</main>
+
+<footer>
+  MGST — tài liệu giới thiệu nội bộ. Đang xây dựng dần theo từng tính năng.
+</footer>
+
+</body>
+</html>
